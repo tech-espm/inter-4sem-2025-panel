@@ -14,8 +14,8 @@ O projeto de painel de monitoramento de sensores em tempo real consiste em uma d
 
 ## Participantes
 
-- [Nome](https://github.com/xxx)
-- [Nome](https://github.com/xxx)
+- [Nome](https://github.com/Marcio-Alexandroni)
+- [Nome](https://github.com/impauloc)
 - [Nome](https://github.com/xxx)
 - [Nome](https://github.com/xxx)
 
