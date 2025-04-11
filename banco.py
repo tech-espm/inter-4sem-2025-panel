@@ -80,3 +80,30 @@ def criarPessoa(nome, email):
 
 # Para mais informações:
 # https://docs.sqlalchemy.org/en/14/tutorial/dbapi_transactions.html
+
+def obterIdMaximo(tabela):
+	with Session(engine) as sessao:
+		registro = sessao.execute(text(f"SELECT MAX(id) id FROM {tabela}")).first()
+
+		if registro == None or registro.id == None:
+			return 0
+		else:
+			return registro.id
+
+def inserirTemperaturas(registros):
+	with Session(engine) as sessao, sessao.begin():
+		for registro in registros:
+			sessao.execute(text("INSERT INTO temperatura (id, data, id_sensor, delta, umidade, temperatura) VALUES (:id, :data, :id_sensor, :delta, :umidade, :temperatura)"), registro)
+
+def listarTemperaturas():
+	with Session(engine) as sessao:
+		registros = sessao.execute(text("SELECT id, date_format(data, '%d/%m/%Y') data, umidade, temperatura FROM temperatura ORDER BY id DESC LIMIT 10"))
+		temperaturas = []
+		for registro in registros:
+			temperaturas.append({
+				"id": registro.id,
+				"data": registro.data,
+				"umidade": registro.umidade,
+				"temperatura": registro.temperatura,
+			})
+		return temperaturas

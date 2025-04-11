@@ -57,7 +57,7 @@
 
 		try {
 
-			let response = await fetch("/obterDados");
+			let response = await fetch("/obterTemperaturas");
 
 			if (response.ok) {
 
@@ -75,8 +75,8 @@
 				}
 
 				for (let i = 0; i < dados.length; i++) {
-					labels.push(dados[i].dia);
-					data.push(dados[i].valor);
+					labels.push(dados[i].data);
+					data.push(dados[i].temperatura);
 				}
 
 				let grafico = new Chart(document.getElementById("grafico-barras"), {
@@ -84,7 +84,7 @@
 					data: {
 						labels: labels,
 						datasets: [{
-							label: "Valor",
+							label: "Temperatura",
 							backgroundColor: "#4e73df",
 							hoverBackgroundColor: "#2e59d9",
 							borderColor: "#4e73df",

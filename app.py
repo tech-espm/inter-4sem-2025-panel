@@ -1,6 +1,7 @@
 from flask import Flask, render_template, json, request, Response
 import config
 import requests
+import banco
 from datetime import datetime
 
 app = Flask(__name__)
@@ -14,30 +15,20 @@ def index():
 def sobre():
     return render_template('index/sobre.html', titulo='Sobre Nós')
 
-@app.get('/obterDados')
-def obterDados():
+@app.get('/obterTemperaturas')
+def obterTemperaturas():
     # Obter o maior id do banco
-    maior_id = 84164
+    maior_id = banco.obterIdMaximo("temperatura")
 
-    resultado = requests.get(f'{config.url_api}?sensor=creative&id_inferior={maior_id}')
+    resultado = requests.get(f'{config.url_api}?sensor=temperature&id_inferior={maior_id}')
     dados_novos = resultado.json()
 
 	# Inserir os dados novos no banco
+    if dados_novos and len(dados_novos) > 0:
+        banco.inserirTemperaturas(dados_novos)
 
-	# Trazer os dados do banco
+    dados = banco.listarTemperaturas()
 
-    dados = [
-        { 'dia': '10/09', 'valor': 80 },
-        { 'dia': '11/09', 'valor': 92 },
-        { 'dia': '12/09', 'valor': 90 },
-        { 'dia': '13/09', 'valor': 101 },
-        { 'dia': '14/09', 'valor': 105 },
-        { 'dia': '15/09', 'valor': 100 },
-        { 'dia': '16/09', 'valor': 64 },
-        { 'dia': '17/09', 'valor': 78 },
-        { 'dia': '18/09', 'valor': 93 },
-        { 'dia': '19/09', 'valor': 110 }
-    ];
     return json.jsonify(dados)
 
 @app.post('/criar')
