@@ -90,6 +90,7 @@ def obterIdMaximo(tabela):
 		else:
 			return registro.id
 
+# Sensor Temperatura
 def inserirTemperaturas(registros):
 	with Session(engine) as sessao, sessao.begin():
 		for registro in registros:
@@ -107,3 +108,42 @@ def listarTemperaturas():
 				"temperatura": registro.temperatura,
 			})
 		return temperaturas
+
+# Sensor Presenca
+def inserirPresenca(registros):
+	with Session(engine) as sessao, sessao.begin():
+		for registro in registros:
+			sessao.execute(text("INSERT INTO presenca (id, data, id_sensor, delta, bateria, ocupado) VALUES (:id, :data, :id_sensor, :delta, :bateria, :ocupado)"), registro)
+
+def listarPresenca():
+	with Session(engine) as sessao:
+		registros = sessao.execute(text("SELECT id, date_format(data, '%d/%m/%Y') data, delta, ocupado FROM presenca ORDER BY id DESC LIMIT 10"))
+		presenca = []
+		for registro in registros:
+			presenca.append({
+				"id": registro.id,
+				"delta": registro.delta,
+				"bateria": registro.bateria,
+				"ocupado": registro.ocupado,
+			})
+		return presenca
+
+def inserirPresenca(registros):
+	with Session(engine) as sessao, sessao.begin():
+		for registro in registros:
+			sessao.execute(text("INSERT INTO presenca (id, data, id_sensor, delta, bateria, ocupado) VALUES (:id, :data, :id_sensor, :delta, :bateria, :ocupado)"), registro)
+
+# Sensor Passagem
+def listarPresenca():
+	with Session(engine) as sessao:
+		registros = sessao.execute(text("SELECT id, date_format(data, '%d/%m/%Y') data, delta, ocupado FROM presenca ORDER BY id DESC LIMIT 10"))
+		presenca = []
+		for registro in registros:
+			presenca.append({
+				"id": registro.id,
+				"delta": registro.delta,
+				"bateria": registro.bateria,
+				"ocupado": registro.ocupado,
+			})
+		return presenca
+

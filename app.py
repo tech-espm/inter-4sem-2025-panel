@@ -31,6 +31,22 @@ def obterTemperaturas():
 
     return json.jsonify(dados)
 
+@app.get('/obterPresenca')
+def obterPresenca():
+    # Obter o maior id do banco
+    maior_id = banco.obterIdMaximo("ocupado")
+
+    resultado = requests.get(f'{config.url_api}?sensor=presenca&id_inferior={maior_id}')
+    dados_novos = resultado.json()
+
+	# Inserir os dados novos no banco
+    if dados_novos and len(dados_novos) > 0:
+        banco.inserirPresenca(dados_novos)
+
+    dados = banco.listarPresenca()
+
+    return json.jsonify(dados)
+
 @app.post('/criar')
 def criar():
     dados = request.json
