@@ -91,12 +91,12 @@ def obterIdMaximo(tabela):
 			return registro.id
 
 # Sensor Temperatura
-def inserirTemperaturas(registros):
+def inserirTemperatura(registros):
 	with Session(engine) as sessao, sessao.begin():
 		for registro in registros:
 			sessao.execute(text("INSERT INTO temperatura (id, data, id_sensor, delta, umidade, temperatura) VALUES (:id, :data, :id_sensor, :delta, :umidade, :temperatura)"), registro)
 
-def listarTemperaturas():
+def listarTemperatura():
 	with Session(engine) as sessao:
 		registros = sessao.execute(text("SELECT id, date_format(data, '%d/%m/%Y') data, umidade, temperatura FROM temperatura ORDER BY id DESC LIMIT 10"))
 		temperaturas = []
@@ -117,7 +117,7 @@ def inserirPresenca(registros):
 
 def listarPresenca():
 	with Session(engine) as sessao:
-		registros = sessao.execute(text("SELECT id, date_format(data, '%d/%m/%Y') data, delta, ocupado FROM presenca ORDER BY id DESC LIMIT 10"))
+		registros = sessao.execute(text("select id_sensor, date(data) dia, avg(delta) presenca_media from presenca where data between '2025-03-10 00:00:00' and '2025-03-14 23:59:59' and ocupado = 0 group by id_sensor, dia order by id_sensor, dia;"))
 		presenca = []
 		for registro in registros:
 			presenca.append({
@@ -136,7 +136,7 @@ def inserirPassagem(registros):
 
 def listarPassagem():
 	with Session(engine) as sessao:
-		registros = sessao.execute(text("SELECT id, date_format(data, '%d/%m/%Y') data, delta, entrada, saida FROM passagem ORDER BY id DESC LIMIT 10"))
+		registros = sessao.execute(text("select date_format(date(data), '%d/%m/%Y') dia, extract(hour from data) hora, sum(entrada) entrada, sum(saida) saida from passagem where id_sensor = 2 and data between '2025-03-03 00:00:00' and '2025-03-14 23:59:59' group by dia, hora;"))
 		passagem = []
 		for registro in registros:
 			passagem.append({
@@ -217,3 +217,23 @@ def listarCreative():
 				"ponto_orvalho": registro.ponto_orvalho,
     			})
 		return creative
+
+# Sensor Solo    
+def inserirSolo(registros):
+	with Session(engine) as sessao, sessao.begin():
+		for registro in registros:
+			sessao.execute(text("INSERT INTO solo (id, data, id_sensor, delta, condutividade, umidade, temperatura) VALUES (:id, :data, :id_sensor, :delta, :condutividade, :umidade, :temperatura"), registro)
+
+def listarSolo():
+	with Session(engine) as sessao:
+		registros = sessao.execute(text("select date_format(date(data), '%d/%m/%Y') dia, extract(hour from data) hora, avg(condutividade) condutividade, avg(umidade) umidade, avg(temperatura) temperatura from solo where data between '2025-03-03 00:00:00' and '2025-03-14 23:59:59' group by dia, hora order by dia, hora;"))
+		solo = []
+		for registro in registros:
+			solo.append({
+				"id": registro.id,
+				"delta": registro.delta,
+				"condutividade": registro.condutividade,
+				"umidade": registro.umidade,
+				"temperatura": registro.temperatura,
+    			})
+		return solo
