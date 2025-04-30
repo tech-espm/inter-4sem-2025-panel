@@ -61,9 +61,19 @@
 			<div class="card shadow my-4">
 				<div class="card-body">
 					<form id="form">
-						<div class="form-group">
-							<label for="data">Data</label>
-							<input id="data" name="data" class="form-control" type="date" value="{{ hoje }}" />
+						<div class="row">
+							<div class="col-sm-6 col-md-4">
+								<div class="form-group">
+									<label for="data_inicial">Data Inicial</label>
+									<input id="data_inicial" name="data_inicial" class="form-control" type="date" value="{{ hoje }}" />
+								</div>
+							</div>
+							<div class="col-sm-6 col-md-4">
+								<div class="form-group">
+									<label for="data_final">Data Final</label>
+									<input id="data_final" name="data_final" class="form-control" type="date" value="{{ hoje }}" />
+								</div>
+							</div>
 						</div>
 
 						<button type="submit" class="btn btn-primary">Listar</button>
@@ -90,7 +100,10 @@
 
 	$("#form").validate({
 		rules: {
-			data: {
+			data_inicial: {
+				required: true
+			},
+			data_final: {
 				required: true
 			}
 		},

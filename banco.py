@@ -147,23 +147,3 @@ def listarPassagem():
 				"saida": registro.saida,
 			})
 		return passagem
-
-# Sensor Passagem    
-def inserirAbertura(registros):
-	with Session(engine) as sessao, sessao.begin():
-		for registro in registros:
-			sessao.execute(text("INSERT INTO abertura (id, data, id_sensor, delta, bateria, fechado, instalacao) VALUES (:id, :data, :id_sensor, :delta, :bateria, :fechado, :instalacao)"), registro)
-
-def listarAbertura():
-	with Session(engine) as sessao:
-		registros = sessao.execute(text("SELECT id, date_format(data, '%d/%m/%Y') data, delta, fechado, instalacao FROM abertura ORDER BY id DESC LIMIT 10"))
-		abertura = []
-		for registro in registros:
-			abertura.append({
-				"id": registro.id,
-				"delta": registro.delta,
-				"bateria": registro.bateria,
-				"entrada": registro.entrada,
-				"saida": registro.saida,
-			})
-		return abertura
