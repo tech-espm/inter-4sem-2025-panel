@@ -34,7 +34,7 @@ def obterTemperaturas():
 @app.get('/obterPresenca')
 def obterPresenca():
     # Obter o maior id do banco
-    maior_id = banco.obterIdMaximo("ocupado")
+    maior_id = banco.obterIdMaximo("presenca")
 
     resultado = requests.get(f'{config.url_api}?sensor=presenca&id_inferior={maior_id}')
     dados_novos = resultado.json()
@@ -50,7 +50,7 @@ def obterPresenca():
 @app.get('/obterPassagem')
 def obterPassagem():
     # Obter o maior id do banco
-    maior_id = banco.obterIdMaximo("entrada")
+    maior_id = banco.obterIdMaximo("passagem")
 
     resultado = requests.get(f'{config.url_api}?sensor=passagem&id_inferior={maior_id}')
     dados_novos = resultado.json()
@@ -62,6 +62,59 @@ def obterPassagem():
     dados = banco.listarPassagem()
 
     return json.jsonify(dados)
+
+@app.get('/obterOdor')
+def obterPassagem():
+    # Obter o maior id do banco
+    maior_id = banco.obterIdMaximo("odor")
+
+    resultado = requests.get(f'{config.url_api}?sensor=odor&id_inferior={maior_id}')
+    dados_novos = resultado.json()
+
+	# Inserir os dados novos no banco
+    if dados_novos and len(dados_novos) > 0:
+        banco.inserirOdor(dados_novos)
+
+    dados = banco.listarOdor()
+
+    return json.jsonify(dados)
+
+@app.get('/obterPCA')
+def obterPassagem():
+    # Obter o maior id do banco
+    maior_id = banco.obterIdMaximo("pca")
+
+    resultado = requests.get(f'{config.url_api}?sensor=pca&id_inferior={maior_id}')
+    dados_novos = resultado.json()
+
+	# Inserir os dados novos no banco
+    if dados_novos and len(dados_novos) > 0:
+        banco.inserirPCA(dados_novos)
+
+    dados = banco.listarPCA()
+
+    return json.jsonify(dados)
+
+@app.get('/obterCreative')
+def obterPassagem():
+    # Obter o maior id do banco
+    maior_id = banco.obterIdMaximo("creative")
+
+    resultado = requests.get(f'{config.url_api}?sensor=creative&id_inferior={maior_id}')
+    dados_novos = resultado.json()
+
+	# Inserir os dados novos no banco
+    if dados_novos and len(dados_novos) > 0:
+        banco.inserirCreative(dados_novos)
+
+    dados = banco.listarCreative()
+
+    return json.jsonify(dados)
+
+
+
+
+
 
 
 @app.post('/criar')

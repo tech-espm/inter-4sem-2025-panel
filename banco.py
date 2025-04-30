@@ -147,3 +147,73 @@ def listarPassagem():
 				"saida": registro.saida,
 			})
 		return passagem
+
+# Sensor Odor    
+def inserirOdor(registros):
+	with Session(engine) as sessao, sessao.begin():
+		for registro in registros:
+			sessao.execute(text("INSERT INTO odor (id, data, id_sensor, delta, bateria, h2s, umidade, nh3, temperatura) VALUES (:id, :data, :id_sensor, :delta, :bateria, :h2s, :umidade, :nh3, :temperatura)"), registro)
+
+def listarOdor():
+	with Session(engine) as sessao:
+		registros = sessao.execute(text("select date_format(date(data), '%d/%m/%Y') dia, extract(hour from data) hora, avg(bateria) bateria, avg(h2s) h2s, avg(umidade) umidade, avg(nh3) nh3, avg(temperatura) temperatura from odor where id_sensor = 1 and data between '2025-03-03 00:00:00' and '2025-03-14 23:59:59' group by dia, hora order by dia, hora;"))
+		odor = []
+		for registro in registros:
+			odor.append({
+				"id": registro.id,
+				"delta": registro.delta,
+				"bateria": registro.bateria,
+				"h2s": registro.h2s,
+				"umidade": registro.umidade,
+				"nh3": registro.nh3,
+				"temperatura": registro.temperatura,
+    			})
+		return odor
+
+# Sensor PCA    
+def inserirPCA(registros):
+	with Session(engine) as sessao, sessao.begin():
+		for registro in registros:
+			sessao.execute(text("INSERT INTO pca (id, data, id_sensor, delta, pessoas, luminosidade, umidade, temperatura) VALUES (:id, :data, :id_sensor, :delta, :pessoas, :luminosidade, :umidade, :temperatura)"), registro)
+
+def listarPCA():
+	with Session(engine) as sessao:
+		registros = sessao.execute(text("select tmp.id_sensor, tmp.dia, tmp.hora, tmp.pessoas, u.pessoas ultimo_pessoas from (select id_sensor, date_format(date(data), '%d/%m/%Y') dia, extract(hour from data) hora, max(pessoas) pessoas, max(id) id_ultimo from pca where data between '2025-03-03 00:00:00' and '2025-03-14 23:59:59' group by id_sensor, dia, hora order by id_sensor, dia, hora) tmp inner join pca u on u.id = tmp.id_ultimo;"))
+		pca = []
+		for registro in registros:
+			pca.append({
+				"id": registro.id,
+				"delta": registro.delta,
+				"pessoas": registro.pessoas,
+				"luminosidade": registro.luminosidade,
+				"umidade": registro.umidade,
+				"temperatura": registro.temperatura,
+    			})
+		return pca
+
+# Sensor Creative    
+def inserirCreative(registros):
+	with Session(engine) as sessao, sessao.begin():
+		for registro in registros:
+			sessao.execute(text("INSERT INTO creative (id, data, id_sensor, delta, luminosidade, umidade, temperatura, voc, co2, pressao_ar, ruido, aerosol_parado, aerosol_risco, ponto_orvalho) VALUES (:id, :data, :id_sensor, :delta, :luminosidade, :umidade, :temperatura, :voc, :co2, :pressao_ar, :ruido, :aerosol_parado, :aerosol_risco, :ponto_orvalho"), registro)
+
+def listarCreative():
+	with Session(engine) as sessao:
+		registros = sessao.execute(text("select date_format(date(data), '%d/%m/%Y') dia, extract(hour from data) hora, avg(luminosidade) luminosidade, avg(umidade) umidade, avg(voc) voc, avg(co2) co2, avg(pressao_ar) pressao_ar, avg(ruido) ruido, avg(ponto_orvalho) ponto_orvalho from creative where data between '2025-03-03 00:00:00' and '2025-03-14 23:59:59' group by dia, hora order by dia, hora;"))
+		creative = []
+		for registro in registros:
+			creative.append({
+				"id": registro.id,
+				"delta": registro.delta,
+				"luminosidade": registro.luminosidade,
+				"umidade": registro.umidade,
+				"temperatura": registro.temperatura,
+				"voc": registro.voc,
+				"co2": registro.co2,
+				"pressao_ar": registro.pressao_ar,
+				"ruido": registro.ruido,
+				"aerosol_parado": registro.aerosol_parado,
+				"aerosol_risco": registro.aerosol_risco,
+				"ponto_orvalho": registro.ponto_orvalho,
+    			})
+		return creative

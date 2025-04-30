@@ -131,22 +131,6 @@ CREATE TABLE presenca (
   KEY presenca_id_sensor (id_sensor)
 );
 
--- topic v3/espm/devices/magnetic01/up
--- topic v3/espm/devices/magnetic02/up
--- topic v3/espm/devices/magnetic03/up
--- { "end_device_ids": { "device_id": "magnetic01" }, "uplink_message": { "rx_metadata": [{ "timestamp": 2040934975 }], "decoded_payload": { "battery": 87, "door": "close", "install": "no" } } }
-CREATE TABLE abertura (
-  id bigint NOT NULL,
-  data datetime NOT NULL,
-  id_sensor tinyint NOT NULL,
-  delta int NOT NULL,
-  bateria tinyint NOT NULL,
-  fechado tinyint NOT NULL,
-  instalacao tinyint NOT NULL,
-  PRIMARY KEY (id),
-  KEY abertura_data_id_sensor (data, id_sensor),
-  KEY abertura_id_sensor (id_sensor)
-);
 
 -- topic v3/espm/devices/temperature01/up
 -- { "end_device_ids": { "device_id": "temperature01" }, "uplink_message": { "rx_metadata": [{ "timestamp": 2040934975 }], "decoded_payload": { "humidity": 82, "temperature": 23.4 } } }
