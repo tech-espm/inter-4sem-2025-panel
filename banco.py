@@ -128,22 +128,42 @@ def listarPresenca():
 			})
 		return presenca
 
-def inserirPresenca(registros):
+# Sensor Passagem    
+def inserirPassagem(registros):
 	with Session(engine) as sessao, sessao.begin():
 		for registro in registros:
-			sessao.execute(text("INSERT INTO presenca (id, data, id_sensor, delta, bateria, ocupado) VALUES (:id, :data, :id_sensor, :delta, :bateria, :ocupado)"), registro)
+			sessao.execute(text("INSERT INTO presenca (id, data, id_sensor, delta, bateria, entrada, saida) VALUES (:id, :data, :id_sensor, :delta, :bateria, :entrada, :saida)"), registro)
 
-# Sensor Passagem
-def listarPresenca():
+def listarPassagem():
 	with Session(engine) as sessao:
-		registros = sessao.execute(text("SELECT id, date_format(data, '%d/%m/%Y') data, delta, ocupado FROM presenca ORDER BY id DESC LIMIT 10"))
-		presenca = []
+		registros = sessao.execute(text("SELECT id, date_format(data, '%d/%m/%Y') data, delta, entrada, saida FROM passagem ORDER BY id DESC LIMIT 10"))
+		passagem = []
 		for registro in registros:
-			presenca.append({
+			passagem.append({
 				"id": registro.id,
 				"delta": registro.delta,
 				"bateria": registro.bateria,
-				"ocupado": registro.ocupado,
+				"entrada": registro.entrada,
+				"saida": registro.saida,
 			})
-		return presenca
+		return passagem
 
+# Sensor Passagem    
+def inserirPassagem(registros):
+	with Session(engine) as sessao, sessao.begin():
+		for registro in registros:
+			sessao.execute(text("INSERT INTO presenca (id, data, id_sensor, delta, bateria, entrada, saida) VALUES (:id, :data, :id_sensor, :delta, :bateria, :entrada, :saida)"), registro)
+
+def listarPassagem():
+	with Session(engine) as sessao:
+		registros = sessao.execute(text("SELECT id, date_format(data, '%d/%m/%Y') data, delta, entrada, saida FROM passagem ORDER BY id DESC LIMIT 10"))
+		passagem = []
+		for registro in registros:
+			passagem.append({
+				"id": registro.id,
+				"delta": registro.delta,
+				"bateria": registro.bateria,
+				"entrada": registro.entrada,
+				"saida": registro.saida,
+			})
+		return passagem
