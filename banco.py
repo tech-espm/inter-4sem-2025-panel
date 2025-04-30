@@ -132,7 +132,7 @@ def listarPresenca():
 def inserirPassagem(registros):
 	with Session(engine) as sessao, sessao.begin():
 		for registro in registros:
-			sessao.execute(text("INSERT INTO presenca (id, data, id_sensor, delta, bateria, entrada, saida) VALUES (:id, :data, :id_sensor, :delta, :bateria, :entrada, :saida)"), registro)
+			sessao.execute(text("INSERT INTO passagem (id, data, id_sensor, delta, bateria, entrada, saida) VALUES (:id, :data, :id_sensor, :delta, :bateria, :entrada, :saida)"), registro)
 
 def listarPassagem():
 	with Session(engine) as sessao:
@@ -149,21 +149,21 @@ def listarPassagem():
 		return passagem
 
 # Sensor Passagem    
-def inserirPassagem(registros):
+def inserirAbertura(registros):
 	with Session(engine) as sessao, sessao.begin():
 		for registro in registros:
-			sessao.execute(text("INSERT INTO presenca (id, data, id_sensor, delta, bateria, entrada, saida) VALUES (:id, :data, :id_sensor, :delta, :bateria, :entrada, :saida)"), registro)
+			sessao.execute(text("INSERT INTO abertura (id, data, id_sensor, delta, bateria, fechado, instalacao) VALUES (:id, :data, :id_sensor, :delta, :bateria, :fechado, :instalacao)"), registro)
 
-def listarPassagem():
+def listarAbertura():
 	with Session(engine) as sessao:
-		registros = sessao.execute(text("SELECT id, date_format(data, '%d/%m/%Y') data, delta, entrada, saida FROM passagem ORDER BY id DESC LIMIT 10"))
-		passagem = []
+		registros = sessao.execute(text("SELECT id, date_format(data, '%d/%m/%Y') data, delta, fechado, instalacao FROM abertura ORDER BY id DESC LIMIT 10"))
+		abertura = []
 		for registro in registros:
-			passagem.append({
+			abertura.append({
 				"id": registro.id,
 				"delta": registro.delta,
 				"bateria": registro.bateria,
 				"entrada": registro.entrada,
 				"saida": registro.saida,
 			})
-		return passagem
+		return abertura

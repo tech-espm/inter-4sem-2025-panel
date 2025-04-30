@@ -63,6 +63,22 @@ def obterPassagem():
 
     return json.jsonify(dados)
 
+@app.get('/obterAbertura')
+def obterAbertura():
+    # Obter o maior id do banco
+    maior_id = banco.obterIdMaximo("fechado")
+
+    resultado = requests.get(f'{config.url_api}?sensor=abertura&id_inferior={maior_id}')
+    dados_novos = resultado.json()
+
+	# Inserir os dados novos no banco
+    if dados_novos and len(dados_novos) > 0:
+        banco.inserirAbertura(dados_novos)
+
+    dados = banco.listarAbertura()
+
+    return json.jsonify(dados)
+
 
 @app.post('/criar')
 def criar():
