@@ -195,11 +195,11 @@ def listarPCA():
 def inserirCreative(registros):
 	with Session(engine) as sessao, sessao.begin():
 		for registro in registros:
-			sessao.execute(text("INSERT INTO creative (id, data, id_sensor, delta, luminosidade, umidade, temperatura, voc, co2, pressao_ar, ruido, aerosol_parado, aerosol_risco, ponto_orvalho) VALUES (:id, :data, :id_sensor, :delta, :luminosidade, :umidade, :temperatura, :voc, :co2, :pressao_ar, :ruido, :aerosol_parado, :aerosol_risco, :ponto_orvalho"), registro)
+			sessao.execute(text("INSERT INTO creative (id, data, id_sensor, delta, luminosidade, umidade, voc, co2, pressao_ar, ruido, aerosol_parado, aerosol_risco, ponto_orvalho) VALUES (:id, :data, :id_sensor, :delta, :luminosidade, :umidade, :voc, :co2, :pressao_ar, :ruido, :aerosol_parado, :aerosol_risco, :ponto_orvalho"), registro)
 
 def listarCreative():
 	with Session(engine) as sessao:
-		registros = sessao.execute(text("select date_format(date(data), '%d/%m/%Y') dia, extract(hour from data) hora, avg(luminosidade) luminosidade, avg(umidade) umidade, ;temperatura(temperatura) avg(voc) voc, avg(co2) co2, avg(pressao_ar) pressao_ar, avg(ruido) ruido, avg(ponto_orvalho) ponto_orvalho from creative where data between '2025-03-03 00:00:00' and '2025-03-14 23:59:59' group by dia, hora order by dia, hora;;"))
+		registros = sessao.execute(text("select date_format(date(data), '%d/%m/%Y') dia, extract(hour from data) hora, avg(luminosidade) luminosidade, avg(umidade) umidade, avg(voc) voc, avg(co2) co2, avg(pressao_ar) pressao_ar, avg(ruido) ruido, avg(ponto_orvalho) ponto_orvalho from creative where data between '2025-03-03 00:00:00' and '2025-03-14 23:59:59' group by dia, hora order by dia, hora;;"))
 		creative = []
 		for registro in registros:
 			creative.append({
@@ -207,7 +207,6 @@ def listarCreative():
 				"delta": registro.delta,
 				"luminosidade": registro.luminosidade,
 				"umidade": registro.umidade,
-				"temperatura": registro.temperatura,
 				"voc": registro.voc,
 				"co2": registro.co2,
 				"pressao_ar": registro.pressao_ar,
