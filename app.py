@@ -15,8 +15,8 @@ def index():
 def sobre():
     return render_template('index/sobre.html', titulo='Sobre Nós')
 
-@app.get('/obterTemperatura')
-def obterTemperatura():
+@app.get('/obterTemperaturas')
+def obterTemperaturas():
     # Obter o maior id do banco
     maior_id = banco.obterIdMaximo("temperatura")
 
@@ -80,7 +80,7 @@ def obterOdor():
     return json.jsonify(dados)
 
 @app.get('/obterPCA')
-def obterCreative():
+def obterPCA():
     # Obter o maior id do banco
     maior_id = banco.obterIdMaximo("pca")
 

@@ -121,10 +121,9 @@
 
 <div style="padding:20px"></div>
 
+{% endblock %}
 
-
-<%- contentFor("espaco-head") %>
-
+{% block head %}
 <style>
 
 	body{
@@ -251,7 +250,9 @@
 	}
 
 </style>
+{% endblock %}
 
+{% block rodape %}
 <%- contentFor("espaco-rodape") %>
 <script src="/public/js/wow.min.js"></script>
 <script>
@@ -260,6 +261,4 @@ new WOW().init();
 <script>
 	AOS.init();
   </script>
-
-
 {% endblock %}
