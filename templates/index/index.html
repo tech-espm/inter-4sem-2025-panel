@@ -2,45 +2,7 @@
 
 {% block head %}
 
-<!-- Babylon.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.6.2/dat.gui.min.js"></script>
-<script src="https://assets.babylonjs.com/generated/Assets.js"></script>
-<script src="https://cdn.babylonjs.com/recast.js"></script>
-<script src="https://cdn.babylonjs.com/ammo.js"></script>
-<script src="https://cdn.babylonjs.com/havok/HavokPhysics_umd.js"></script>
-<script src="https://cdn.babylonjs.com/cannon.js"></script>
-<script src="https://cdn.babylonjs.com/Oimo.js"></script>
-<script src="https://cdn.babylonjs.com/earcut.min.js"></script>
-<script src="https://cdn.babylonjs.com/babylon.js"></script>
-<script src="https://cdn.babylonjs.com/materialsLibrary/babylonjs.materials.min.js"></script>
-<script src="https://cdn.babylonjs.com/proceduralTexturesLibrary/babylonjs.proceduralTextures.min.js"></script>
-<script src="https://cdn.babylonjs.com/postProcessesLibrary/babylonjs.postProcess.min.js"></script>
-<script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.js"></script>
-<script src="https://cdn.babylonjs.com/serializers/babylonjs.serializers.min.js"></script>
-<script src="https://cdn.babylonjs.com/gui/babylon.gui.min.js"></script>
-<script src="https://cdn.babylonjs.com/addons/babylonjs.addons.min.js"></script>
-<script src="https://cdn.babylonjs.com/inspector/babylon.inspector.bundle.js"></script>
-
 <style type="text/css">
-	#canvasZone {
-		position: relative;
-		margin: 0;
-		padding: 0;
-		width: 100%;
-		min-height: 400px;
-		height: 60vh;
-	}
-
-	#renderCanvas {
-		margin: 0;
-		padding: 0;
-		width: 100%;
-		height: 100%;
-		border: none;
-		outline: none;
-		user-select: none;
-		touch-action: none;
-	}
 </style>
 
 {% endblock %}
@@ -49,11 +11,9 @@
 
 <div class="container-fluid">
 
-	<h1>
-		Projeto
+	<h1 class="my-4">
+		<span class="animated-underline">Dashboard</span>
 	</h1>
-
-	<div id="canvasZone"><canvas id="renderCanvas"></canvas></div>
 
 	<div class="row">
 		<div class="col-sm-4">
@@ -62,21 +22,21 @@
 				<div class="card-body">
 					<form id="form">
 						<div class="row">
-							<div class="col-sm-6 col-md-4">
+							<div class="col-sm-6">
 								<div class="form-group">
 									<label for="data_inicial">Data Inicial</label>
-									<input id="data_inicial" name="data_inicial" class="form-control" type="date" value="{{ hoje }}" />
+									<input id="data_inicial" name="data_inicial" class="form-control" type="date" value="{{ data_inicial }}" />
 								</div>
 							</div>
-							<div class="col-sm-6 col-md-4">
+							<div class="col-sm-6">
 								<div class="form-group">
 									<label for="data_final">Data Final</label>
-									<input id="data_final" name="data_final" class="form-control" type="date" value="{{ hoje }}" />
+									<input id="data_final" name="data_final" class="form-control" type="date" value="{{ data_final }}" />
 								</div>
 							</div>
 						</div>
 
-						<button type="submit" class="btn btn-primary">Listar</button>
+						<button type="submit" class="btn btn-primary">Analisar</button>
 					</form>
 				</div>
 			</div>
@@ -85,7 +45,33 @@
 	</div>
 
 	<div class="card shadow my-4">
-		<div class="card-body" id="div-grafico"></div>
+		<div class="card-body">
+			<div id="div-grafico-temperatura">
+				<div class="text-center">
+					Por favor, aguarde...
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="card shadow my-4">
+		<div class="card-body">
+			<div id="div-grafico-passagem">
+				<div class="text-center">
+					Por favor, aguarde...
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="card shadow my-4">
+		<div class="card-body">
+			<div id="div-grafico-creative">
+				<div class="text-center">
+					Por favor, aguarde...
+				</div>
+			</div>
+		</div>
 	</div>
 
 </div>
@@ -97,6 +83,8 @@
 
 <script type="text/javascript">
 	"use strict";
+
+	let primeiraVez = true;
 
 	$("#form").validate({
 		rules: {
@@ -112,101 +100,293 @@
 		}
 	});
 
+	function atualizarTemperatura(dados) {
+		let div = document.getElementById("div-grafico-temperatura");
+		div.innerHTML = '<canvas id="grafico-temperatura" style="height: 30vh;"></canvas>';
+
+		let labels = [], data = [];
+
+		for (let i = 0; i < dados.length; i++) {
+			labels.push(dados[i].dia + " " + dados[i].hora + ":00");
+			data.push(dados[i].temperatura);
+		}
+
+		let grafico = new Chart(document.getElementById("grafico-temperatura"), {
+			type: "line",
+			data: {
+				labels: labels,
+				datasets: [{
+					label: "Temperatura (°C)",
+					backgroundColor: "#007bff",
+					hoverBackgroundColor: "#56a7ff",
+					borderColor: "#007bff",
+					data: data,
+				}],
+			},
+			options: {
+				maintainAspectRatio: false,
+				layout: {
+					padding: {
+						left: 10,
+						right: 25,
+						top: 25,
+						bottom: 0
+					}
+				},
+				scales: {
+					x: {
+						gridLines: {
+							display: false,
+							drawBorder: false
+						},
+						ticks: {
+							maxTicksLimit: 10
+						},
+						maxBarThickness: 25,
+					},
+					y: {
+						//display: false,
+						ticks: {
+							min: 0,
+							max: 10,
+							maxTicksLimit: 10,
+							padding: 10
+						},
+						gridLines: {
+							color: "rgb(234, 236, 244)",
+							zeroLineColor: "rgb(234, 236, 244)",
+							drawBorder: false,
+							borderDash: [2],
+							zeroLineBorderDash: [2]
+						}
+					},
+				},
+				legend: {
+					display: false
+				},
+				tooltips: {
+					titleMarginBottom: 10,
+					titleFontColor: '#6e707e',
+					titleFontSize: 14,
+					backgroundColor: "rgb(255,255,255)",
+					bodyFontColor: "#858796",
+					borderColor: '#dddfeb',
+					borderWidth: 1,
+					xPadding: 15,
+					yPadding: 15,
+					displayColors: false,
+					caretPadding: 10
+				},
+			}
+		});
+	}
+
+	function atualizarPassagem(dados) {
+		let div = document.getElementById("div-grafico-passagem");
+		div.innerHTML = '<canvas id="grafico-passagem" style="height: 30vh;"></canvas>';
+
+		let labels = [], dataEntrada = [], dataSaida = [];
+
+		for (let i = 0; i < dados.length; i++) {
+			labels.push(dados[i].dia + " " + dados[i].hora + ":00");
+			dataEntrada.push(dados[i].entrada);
+			dataSaida.push(dados[i].saida);
+		}
+
+		let grafico = new Chart(document.getElementById("grafico-passagem"), {
+			type: "bar",
+			data: {
+				labels: labels,
+				datasets: [{
+					label: "Entrada",
+					backgroundColor: "#007bff",
+					hoverBackgroundColor: "#56a7ff",
+					borderColor: "#007bff",
+					data: dataEntrada,
+				},
+				{
+					label: "Saída",
+					backgroundColor: "#444444",
+					hoverBackgroundColor: "#888888",
+					borderColor: "#444444",
+					data: dataSaida,
+				}],
+			},
+			options: {
+				maintainAspectRatio: false,
+				layout: {
+					padding: {
+						left: 10,
+						right: 25,
+						top: 25,
+						bottom: 0
+					}
+				},
+				scales: {
+					x: {
+						gridLines: {
+							display: false,
+							drawBorder: false
+						},
+						ticks: {
+							maxTicksLimit: 10
+						},
+						maxBarThickness: 25,
+					},
+					y: {
+						//display: false,
+						ticks: {
+							min: 0,
+							max: 10,
+							maxTicksLimit: 10,
+							padding: 10
+						},
+						gridLines: {
+							color: "rgb(234, 236, 244)",
+							zeroLineColor: "rgb(234, 236, 244)",
+							drawBorder: false,
+							borderDash: [2],
+							zeroLineBorderDash: [2]
+						}
+					},
+				},
+				legend: {
+					display: false
+				},
+				tooltips: {
+					titleMarginBottom: 10,
+					titleFontColor: '#6e707e',
+					titleFontSize: 14,
+					backgroundColor: "rgb(255,255,255)",
+					bodyFontColor: "#858796",
+					borderColor: '#dddfeb',
+					borderWidth: 1,
+					xPadding: 15,
+					yPadding: 15,
+					displayColors: false,
+					caretPadding: 10
+				},
+			}
+		});
+	}
+
+	function atualizarCreative(dados) {
+		let div = document.getElementById("div-grafico-creative");
+		div.innerHTML = '<canvas id="grafico-creative" style="height: 30vh;"></canvas>';
+
+		let labels = [], dataLuminosidade = [], dataUmidade = [], dataRuido = [];
+
+		for (let i = 0; i < dados.length; i++) {
+			labels.push(dados[i].dia + " " + dados[i].hora + ":00");
+			dataLuminosidade.push(dados[i].luminosidade);
+			dataUmidade.push(dados[i].umidade);
+			dataRuido.push(dados[i].ruido);
+		}
+
+		let grafico = new Chart(document.getElementById("grafico-creative"), {
+			type: "bar",
+			data: {
+				labels: labels,
+				datasets: [{
+					label: "Luminosidade (lux)",
+					backgroundColor: "#007bff",
+					hoverBackgroundColor: "#56a7ff",
+					borderColor: "#007bff",
+					data: dataLuminosidade,
+				},
+				{
+					label: "Umidade (% RH)",
+					backgroundColor: "#444444",
+					hoverBackgroundColor: "#888888",
+					borderColor: "#444444",
+					data: dataUmidade,
+				},
+				{
+					label: "Ruído (dB)",
+					backgroundColor: "#888888",
+					hoverBackgroundColor: "#aaaaaa",
+					borderColor: "#888888",
+					data: dataRuido,
+				}],
+			},
+			options: {
+				maintainAspectRatio: false,
+				layout: {
+					padding: {
+						left: 10,
+						right: 25,
+						top: 25,
+						bottom: 0
+					}
+				},
+				scales: {
+					x: {
+						gridLines: {
+							display: false,
+							drawBorder: false
+						},
+						ticks: {
+							maxTicksLimit: 10
+						},
+						maxBarThickness: 25,
+					},
+					y: {
+						//display: false,
+						ticks: {
+							min: 0,
+							max: 10,
+							maxTicksLimit: 10,
+							padding: 10
+						},
+						gridLines: {
+							color: "rgb(234, 236, 244)",
+							zeroLineColor: "rgb(234, 236, 244)",
+							drawBorder: false,
+							borderDash: [2],
+							zeroLineBorderDash: [2]
+						}
+					},
+				},
+				legend: {
+					display: false
+				},
+				tooltips: {
+					titleMarginBottom: 10,
+					titleFontColor: '#6e707e',
+					titleFontSize: 14,
+					backgroundColor: "rgb(255,255,255)",
+					bodyFontColor: "#858796",
+					borderColor: '#dddfeb',
+					borderWidth: 1,
+					xPadding: 15,
+					yPadding: 15,
+					displayColors: false,
+					caretPadding: 10
+				},
+			}
+		});
+	}
+
 	async function atualizarDados() {
 		waitSwal();
 
 		try {
 
-			let response = await fetch("/obterTemperaturas");
+			let response = await fetch("/obterDados?data_inicial=" + $("#data_inicial").val() + "&data_final=" + $("#data_final").val());
 
 			if (response.ok) {
 
 				Swal.close();
 
-				let div = document.getElementById("div-grafico");
-				div.innerHTML = '<canvas id="grafico-barras" style="height: 50vh;"></canvas>';
-
-				let labels = [], data = [];
-
 				let dados = await response.json();
-				if (!dados || !dados.length) {
+				if (!dados || !dados.temperatura || !dados.passagem) {
 					Swal.fire("Erro", "Sem dados na data especificada!", "error");
 					return;
 				}
 
-				for (let i = 0; i < dados.length; i++) {
-					labels.push(dados[i].data);
-					data.push(dados[i].temperatura);
-				}
-
-				let grafico = new Chart(document.getElementById("grafico-barras"), {
-					type: "bar",
-					data: {
-						labels: labels,
-						datasets: [{
-							label: "Temperatura",
-							backgroundColor: "#4e73df",
-							hoverBackgroundColor: "#2e59d9",
-							borderColor: "#4e73df",
-							data: data,
-						}],
-					},
-					options: {
-						maintainAspectRatio: false,
-						layout: {
-							padding: {
-								left: 10,
-								right: 25,
-								top: 25,
-								bottom: 0
-							}
-						},
-						scales: {
-							x: {
-								gridLines: {
-									display: false,
-									drawBorder: false
-								},
-								ticks: {
-									maxTicksLimit: 10
-								},
-								maxBarThickness: 25,
-							},
-							y: {
-								//display: false,
-								ticks: {
-									min: 0,
-									max: 10,
-									maxTicksLimit: 10,
-									padding: 10
-								},
-								gridLines: {
-									color: "rgb(234, 236, 244)",
-									zeroLineColor: "rgb(234, 236, 244)",
-									drawBorder: false,
-									borderDash: [2],
-									zeroLineBorderDash: [2]
-								}
-							},
-						},
-						legend: {
-							display: false
-						},
-						tooltips: {
-							titleMarginBottom: 10,
-							titleFontColor: '#6e707e',
-							titleFontSize: 14,
-							backgroundColor: "rgb(255,255,255)",
-							bodyFontColor: "#858796",
-							borderColor: '#dddfeb',
-							borderWidth: 1,
-							xPadding: 15,
-							yPadding: 15,
-							displayColors: false,
-							caretPadding: 10
-						},
-					}
-				});
+				atualizarTemperatura(dados.temperatura);
+				atualizarPassagem(dados.passagem);
+				atualizarCreative(dados.creative);
 
 			} else {
 				await exibirErro(response);
@@ -215,115 +395,22 @@
 		} catch (ex) {
 			Swal.fire("Erro", "Erro ao listar os dados: " + ex.message, "error");
 		}
+
+		if (primeiraVez) {
+			primeiraVez = false;
+			setTimeout(() => {
+				const animacoes = document.querySelectorAll(".animated-underline");
+				if (animacoes && animacoes.length > 0) {
+					for (let animacao of animacoes) {
+						animacao.classList.add("active");
+					}
+				}
+			}, 500);
+		}
 	}
 
 	atualizarDados();
 
-</script>
-
-<script type="text/javascript">
-	"use strict";
-
-	let canvas = document.getElementById("renderCanvas");
-	let engine = null;
-	let scene = null;
-	let objetos = [];
-
-	async function createScene() {
-		// https://doc.babylonjs.com/toolsAndResources/inspector
-		// https://doc.babylonjs.com/features/featuresDeepDive/importers/glTF
-		// https://doc.babylonjs.com/features/featuresDeepDive/mesh/transforms/center_origin/position
-		// https://playground.babylonjs.com/#WGZLGJ#11018
-
-		scene = new BABYLON.Scene(engine);
-		// Create a default skybox with an environment.
-		const hdrTexture = BABYLON.CubeTexture.CreateFromPrefilteredData("/static/glb/environment.dds", scene);
-		const currentSkybox = scene.createDefaultSkybox(hdrTexture, true);
-
-		await BABYLON.AppendSceneAsync("/static/glb/cenario.glb", scene);
-
-		let idsAdicionados = new Set();
-
-		for (let i = 1; i <= 24; i++) {
-			await BABYLON.AppendSceneAsync(`/static/glb/boneco${i}.glb`, scene);
-			let nodes = scene.getNodes();
-			for (let i = nodes.length - 1; i >= 0; i--) {
-				const node = nodes[i];
-				if (node.id == "__root__" && !idsAdicionados.has(node.uniqueId)) {
-					objetos.push(node);
-					idsAdicionados.add(node.uniqueId);
-					break;
-				}
-			}
-		}
-
-		/*
-		await BABYLON.AppendSceneAsync("/static/glb/plantinha_3d.glb", scene);
-		let nodes = scene.getNodes();
-		for (let i = nodes.length - 1; i >= 0; i--) {
-			const node = nodes[i];
-			if (node.id == "__root__" && !idsAdicionados.has(node.uniqueId)) {
-				objeto1 = node;
-				idsAdicionados.add(node.uniqueId);
-				break;
-			}
-		}
-
-		await BABYLON.AppendSceneAsync("/static/glb/plantinha_3d.glb", scene);
-		nodes = scene.getNodes();
-		for (let i = nodes.length - 1; i >= 0; i--) {
-			const node = nodes[i];
-			if (node.id == "__root__" && !idsAdicionados.has(node.uniqueId)) {
-				objeto2 = node;
-				objeto2.translate(new BABYLON.Vector3(1, 0, 0), 1, BABYLON.Space.GLOBAL);
-				objeto2.setEnabled(false);
-				idsAdicionados.add(node.uniqueId);
-				break;
-			}
-		}
-		*/
-
-		scene.createDefaultCameraOrLight(true, true, true);
-		const camera = scene.activeCamera;
-		//camera.alpha = Math.PI / 2;
-		camera.alpha = 3.9002879206146526;
-		camera.beta = 1.366535743845697;
-		camera.radius = 36.492787380833136;
-	}
-
-	async function init() {
-		try {
-			engine = new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: false, stencil: false, disableWebGL2Support: false});
-			await createScene();
-		} catch (ex) {
-			alert("Erro ao criar a engine: " + ex.message || ex.toString());
-		}
-
-		window.addEventListener("resize", function () {
-			engine.resize();
-		});
-
-		//scene.debugLayer.show();
-
-		let contador = 0;
-		engine.runRenderLoop(function () {
-			contador++;
-			if (contador >= 90) {
-				contador = 0;
-				for (let i = 0; i < objetos.length; i++) {
-					if (Math.random() < 0.5) {
-						objetos[i].setEnabled(!objetos[i].isEnabled());
-					}
-				}
-			}
-
-			if (scene && scene.activeCamera) {
-				scene.render();
-			}
-		});
-	}
-
-	init();
 </script>
 
 {% endblock %}

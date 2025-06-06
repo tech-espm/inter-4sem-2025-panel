@@ -7,6 +7,14 @@ html, body {
 	min-height: 100vh;
 }
 
+body {
+	background-image: url(/static/img/fundo-blur.jpg);
+	background-attachment: fixed;
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+}
+
 .limitador {
 	max-width: 1200px;
 	margin: 0px auto;
@@ -21,12 +29,18 @@ html, body {
 .conteudo {
 	/* Para fazer o rodapé ficar sempre na parte inferior da página ;) */
 	flex: 1 1 auto;
+	background-color: rgba(255, 255, 255, 0.6);
 }
 
 .rodape {
 	text-align: center;
 	background-color: black;
 	padding: 2rem;
+}
+
+h1 {
+	text-align: center;
+	font-weight: bold;
 }
 
 .link-rodape, .link-rodape:hover {
@@ -162,3 +176,22 @@ html, body {
 		padding: 50px 0;
 	}
 
+.animated-underline {
+	position: relative;
+	display: inline-block;
+}
+
+.animated-underline::after {
+	content: '';
+	position: absolute;
+	width: 0;
+	height: 3px;
+	bottom: -8px;
+	left: 0;
+	background-color: rgba(0, 0, 0, 0.5);
+	transition: width 1.5s ease-in-out;
+}
+
+.animated-underline.active::after {
+	width: 100%;
+}

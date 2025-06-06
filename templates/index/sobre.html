@@ -5,7 +5,6 @@
 <div class="vaga animate__animated animate__fadeIn">
 	<div class="container-fluid">
 		<img src=""/>
-		</div>
 	</div>
 </div>
 
@@ -226,8 +225,9 @@
 	}
 
 	.fundoValores{
-		background-color: rgba(223, 220, 216, 0.399);
+		background-color: rgba(255, 255, 255, 0.4);
 		border-radius: 20px;
+		padding-bottom: 20px;
 	}
 
 	.vaga {
@@ -278,15 +278,4 @@
 	}
 
 </style>
-{% endblock %}
-
-{% block rodape %}
-<%- contentFor("espaco-rodape") %>
-<script src="/public/js/wow.min.js"></script>
-<script>
-new WOW().init();
-</script>
-<script>
-	AOS.init();
-  </script>
 {% endblock %}
