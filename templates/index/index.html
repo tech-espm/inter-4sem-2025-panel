@@ -44,15 +44,6 @@
 		</div>
 	</div>
 
-	<div class="card shadow my-4">
-		<div class="card-body">
-			<div id="div-grafico-temperatura">
-				<div class="text-center">
-					Por favor, aguarde...
-				</div>
-			</div>
-		</div>
-	</div>
 
 	<div class="card shadow my-4">
 		<div class="card-body">
@@ -62,6 +53,65 @@
 				</div>
 			</div>
 		</div>
+	</div>
+
+	<div class="modal" tabindex="-1" role="dialog" id="modal-relatorio-1">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Relatório do Gráfico</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+
+				<div style="text-align:center">
+					
+					<h2>Visualização do gráfico: Passagem</h2>
+
+					<img src="/static/img/Passagem.png" class="ft">
+
+					<p style="font-weight:bold">A análise dos dados de tráfego mostra padrões claros de movimentação na sala monitorada:</p>
+					<p>
+						🟩 Decisões práticas recomendadas
+						<br>🧹 Agendamento de limpeza/manutenção:
+						Programar para o horário das 04h às 06h, período com movimentação zero registrada nos dias.<br>
+
+						<br>🔌 Otimização de energia e climatização:<br>
+						Ligar o sistema de iluminação e ar-condicionado apenas a partir das 07h, com desligamento a partir das 18h.<br>
+
+						<br>📅 Melhor horário para reuniões ou treinamentos:<br>
+						Evitar agendamentos entre 11h e 14h, faixa de maior fluxo de entrada e saída.<br>
+
+					</p>
+					
+				</div>
+
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+			</div>
+			</div>
+		</div>
+	</div>
+
+	<div style="text-align:center">
+		<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#modal-relatorio-1">Gerar Relatório</button>
+	</div>
+
+		<div class="card shadow my-4">
+		<div class="card-body">
+			<div id="div-grafico-temperatura">
+				<div class="text-center">
+					Por favor, aguarde...
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div style="text-align:center">
+		<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#modal-relatorio-1">Gerar Relatório</button>
 	</div>
 
 	<div class="card shadow my-4">
@@ -74,6 +124,10 @@
 		</div>
 	</div>
 
+	<div style="text-align:center">
+		<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#modal-relatorio-1">Gerar Relatório</button>
+	</div>
+	
 </div>
 
 <script src="/static/js/jquery-validate/jquery.validate.min.js"></script>
@@ -384,9 +438,9 @@
 					return;
 				}
 
+				atualizarCreative(dados.creative);
 				atualizarTemperatura(dados.temperatura);
 				atualizarPassagem(dados.passagem);
-				atualizarCreative(dados.creative);
 
 			} else {
 				await exibirErro(response);
